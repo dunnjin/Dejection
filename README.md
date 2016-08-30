@@ -23,8 +23,6 @@ A simple convention-based MVVM framework for WPF
 
 ## Referencing
 
-[![NuGet](https://img.shields.io/nuget/v/Nuget.Core.svg?maxAge=2592000)](https://www.nuget.org/packages/Osc.Dejection/)
-
 Dejection is available as a nuget package from the package manager console:
 
 ```csharp
