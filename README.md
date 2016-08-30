@@ -1,8 +1,6 @@
 # Dejection
 A simple convention-based MVVM framework for WPF
 
-[![Visual Studio Team services](https://img.shields.io/vso/build/larsbrinkhoff/953a34b9-5966-4923-a48a-c41874cfb5f5/1.svg?maxAge=2592000)](https://oscsolutions.visualstudio.com/_apis/public/build/definitions/0086cc5a-5389-4884-a102-f3e3a900cc74/3/badge)
-
 
 
 ## Table of contents
