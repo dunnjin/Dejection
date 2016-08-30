@@ -1,0 +1,410 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Osc.Dejection.Themes"
+                    xmlns:tb="http://www.hardcodet.net/taskbar"
+                    xmlns:controls="clr-namespace:Osc.Dejection.Themes.Controls"
+                    xmlns:converters="clr-namespace:Osc.Dejection.Themes.Converters"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    
+    <!-- Converters -->
+    <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"></converters:NullVisibilityConverter>
+    
+    <!-- Default Font -->
+    <FontFamily x:Key="DefaultFont">#Lato</FontFamily>  
+    
+    <!-- Colors -->
+    <SolidColorBrush x:Key="MainBackgroundColorBrush" Color="#21252B"></SolidColorBrush>
+
+   
+    
+    <!-- Window Resources -->
+    <!--<SolidColorBrush x:Key="WindowBackground" Color="Transparent"></SolidColorBrush>
+    <SolidColorBrush x:Key="WindowBorderBrush" Color="Transparent"></SolidColorBrush>
+    <WindowStyle x:Key="WindowWindowStyle">None</WindowStyle>
+    <ResizeMode x:Key="WindowResizeMode">NoResize</ResizeMode>
+    <SizeToContent x:Key="WindowSizeToContent">WidthAndHeight</SizeToContent>-->
+
+    
+    <!-- Window --><!--
+    <Style TargetType="{x:Type Window}">
+        <Setter Property="Background" Value="{StaticResource WindowBackground}"></Setter>
+        <Setter Property="BorderBrush" Value="{StaticResource WindowBorderBrush}"></Setter>
+        <Setter Property="WindowStyle" Value="{StaticResource WindowWindowStyle}"></Setter>
+        <Setter Property="ResizeMode" Value="{StaticResource WindowResizeMode}"></Setter>
+        <Setter Property="AllowsTransparency" Value="True"></Setter>
+        --><!--<Setter Property="SizeToContent" Value="{StaticResource WindowSizeToContent}"></Setter>--><!--
+    </Style>-->
+    
+    <!-- Label Resources -->
+    <SolidColorBrush x:Key="LabelForeground" Color="#C2C5CB"></SolidColorBrush>
+    
+    <!-- Label -->
+    <Style TargetType="{x:Type Label}">
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}"></Setter>
+        <Setter Property="Foreground" Value="{StaticResource LabelForeground}"></Setter>
+        <Setter Property="Margin" Value="3"></Setter>
+    </Style>
+    
+    <!-- Generic Resources -->
+    <SolidColorBrush x:Key="GenericBackground" Color="#1E2127"></SolidColorBrush>
+
+    <Style x:Key="GenericStyle" TargetType="{x:Type UserControl}">
+        <Setter Property="Background" Value="{StaticResource GenericBackground}"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
+    </Style>
+       
+    <!-- TabControl Resources -->
+    <SolidColorBrush x:Key="TabControlBorderBrush" Color="#181A1F"></SolidColorBrush>
+    
+    <!-- TabControl -->
+    <Style TargetType="{x:Type TabControl}">
+        <Setter Property="BorderBrush" Value="{StaticResource TabControlBorderBrush}"></Setter>
+        <Setter Property="BorderThickness" Value="1"></Setter>
+    </Style>
+    
+    <!-- TabItem Resources -->    
+    <SolidColorBrush x:Key="TabItemBackground" Color="#282C34"></SolidColorBrush>
+    <SolidColorBrush x:Key="TabItemForeground" Color="#8F96A5"></SolidColorBrush>
+    <SolidColorBrush x:Key="TabItemBackgroundIsMouseOver" Color="#31363F"></SolidColorBrush>
+    <SolidColorBrush x:Key="TabItemBackgroundIsSelected" Color="#FF3A3F4B"></SolidColorBrush>
+    <SolidColorBrush x:Key="TabItemForegroundIsMouseOver" Color="#C2C5CB"></SolidColorBrush>
+    <SolidColorBrush x:Key="TabItemForegroundIsSelected" Color="#EFF0F1"></SolidColorBrush>
+    <SolidColorBrush x:Key="TabItemLineStroke" Color="#528BFF"></SolidColorBrush>
+
+    <!-- TabItem -->
+    <Style TargetType="{x:Type TabItem}">
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}"></Setter>
+        <Setter Property="Header" Value="{Binding Header}"></Setter>
+        <Setter Property="Foreground" Value="{StaticResource TabItemForeground}"></Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabItem}">
+                    <Border Name="ItemBorder" CornerRadius="0" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" BorderThickness="0" Background="{StaticResource TabItemBackground}">
+                        <Grid>
+                            <Line x:Name="TabItemLine" StrokeThickness="2" X1="0" Y1="{TemplateBinding Height}" HorizontalAlignment="Left" Stroke="{StaticResource TabItemLineStroke}" Visibility="Hidden"></Line>
+                            <!-- TODO: Add grid to allow for image on the left -->
+                            <ContentPresenter Margin="10, 0, 0, 0" Content="{Binding Path=Header, RelativeSource={RelativeSource FindAncestor,AncestorType=TabItem, AncestorLevel=1}}" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="TabItemLine" Property="Visibility" Value="Visible"></Setter>
+                            <Setter TargetName="ItemBorder" Property="Background" Value="{StaticResource TabItemBackgroundIsSelected}" />
+                            <Setter Property="Foreground" Value="{StaticResource TabItemForegroundIsSelected}"></Setter>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <Condition Property="IsSelected" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="ItemBorder" Property="Background" Value="{StaticResource TabItemBackgroundIsMouseOver}" />
+                            <Setter Property="Foreground" Value="{StaticResource TabItemForegroundIsMouseOver}"></Setter>
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- TextBox Resources -->
+    <SolidColorBrush x:Key="TextBoxBorderBrush" Color="#181A1F"></SolidColorBrush>
+    <SolidColorBrush x:Key="TextBoxBorderBrushIsFocused" Color="#528BFF"></SolidColorBrush>
+    <SolidColorBrush x:Key="TextBoxBackground" Color="#1E2127"></SolidColorBrush>
+    <SolidColorBrush x:Key="TextBoxCaretBrush" Color="#528BFF"></SolidColorBrush>
+    <SolidColorBrush x:Key="TextBoxForeground" Color="#C2C5CB"></SolidColorBrush>
+    <SolidColorBrush x:Key="TextBoxForegroundIsFocused" Color="#EFF0F1"></SolidColorBrush>
+    
+    <!-- TextBox -->
+    <Style TargetType="{x:Type TextBox}">
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}"></Setter>
+        <Setter Property="TextWrapping" Value="NoWrap"></Setter>
+        <Setter Property="Cursor" Value="IBeam"></Setter>
+        <Setter Property="CaretBrush" Value="{StaticResource TextBoxCaretBrush}"></Setter>
+        <Setter Property="Foreground" Value="{StaticResource TextBoxForeground}"></Setter>
+        <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+        <Setter Property="Margin" Value="3"></Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border x:Name="ItemBorder" Padding="2" Background="{StaticResource TextBoxBackground}" BorderBrush="{StaticResource TextBoxBorderBrush}" BorderThickness="1" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" CornerRadius="4,4,4,4">                  
+                        <ScrollViewer x:Name="PART_ContentHost" HorizontalAlignment="Left" VerticalAlignment="Center" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"></ScrollViewer>                        
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="ItemBorder" Property="BorderBrush" Value="{StaticResource TextBoxBorderBrushIsFocused}"></Setter>
+                            <Setter Property="Foreground" Value="{StaticResource TextBoxForegroundIsFocused}"></Setter>
+                            <Setter TargetName="ItemBorder" Property="BorderThickness" Value="2"></Setter>
+                        </Trigger>
+                        <Trigger Property="IsReadOnly" Value="True">
+                            <Setter Property="Opacity" Value="0.75"></Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- PasswordBox Resources -->
+    <SolidColorBrush x:Key="PasswordBoxBorderBrush" Color="#181A1F"></SolidColorBrush>
+    <SolidColorBrush x:Key="PasswordBoxBorderBrushIsFocused" Color="#528BFF"></SolidColorBrush>
+    <SolidColorBrush x:Key="PasswordBoxBackground" Color="#1E2127"></SolidColorBrush>
+    <SolidColorBrush x:Key="PasswordBoxCaretBrush" Color="#528BFF"></SolidColorBrush>
+    <SolidColorBrush x:Key="PasswordBoxForeground" Color="#C2C5CB"></SolidColorBrush>
+    <SolidColorBrush x:Key="PasswordBoxForegroundIsFocused" Color="#EFF0F1"></SolidColorBrush>
+
+    <!-- PasswordBox -->
+    <Style TargetType="{x:Type PasswordBox}">
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}"></Setter>
+        <Setter Property="Cursor" Value="IBeam"></Setter>
+        <Setter Property="CaretBrush" Value="{StaticResource PasswordBoxCaretBrush}"></Setter>
+        <Setter Property="Foreground" Value="{StaticResource PasswordBoxForeground}"></Setter>
+        <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+        <Setter Property="Margin" Value="3"></Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type PasswordBox}">
+                    <Border x:Name="ItemBorder" Padding="2" Background="{StaticResource PasswordBoxBackground}" BorderBrush="{StaticResource PasswordBoxBorderBrush}" BorderThickness="1" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" CornerRadius="4,4,4,4">
+                        <ScrollViewer x:Name="PART_ContentHost" HorizontalAlignment="Left" VerticalAlignment="Center" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"></ScrollViewer>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="ItemBorder" Property="BorderBrush" Value="{StaticResource PasswordBoxBorderBrushIsFocused}"></Setter>
+                            <Setter Property="Foreground" Value="{StaticResource PasswordBoxForegroundIsFocused}"></Setter>
+                            <Setter TargetName="ItemBorder" Property="BorderThickness" Value="2"></Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ComboBox Resources -->
+    <SolidColorBrush x:Key="ComboBoxToggleButtonBorderBrush" Color="#000000"></SolidColorBrush>
+    <SolidColorBrush x:Key="ComboBoxToggleButtonFill" Color="#000000"></SolidColorBrush>
+    <SolidColorBrush x:Key="ComboBoxForeground" Color="#C2C5CB"></SolidColorBrush>
+
+    <!-- ComboBox Toggle Button -->
+    <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="20" />
+            </Grid.ColumnDefinitions>
+            <Border
+                  x:Name="Border" 
+                  Grid.ColumnSpan="2"
+                  CornerRadius="0"
+                  Background="White"
+                  BorderBrush="{StaticResource ComboBoxToggleButtonBorderBrush}"
+                  BorderThickness="1" />
+            <Border 
+                  Grid.Column="0"
+                  CornerRadius="0" 
+                  Margin="1" 
+                  Background="White" 
+                  BorderBrush="{StaticResource ComboBoxToggleButtonBorderBrush}"
+                  BorderThickness="0,0,1,0" />
+            <Path 
+                  x:Name="Arrow"
+                  Grid.Column="1"     
+                  Fill="{StaticResource ComboBoxToggleButtonFill}"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
+                />
+        </Grid>
+    </ControlTemplate>
+
+    <!-- ComboBox TextBox -->
+    <ControlTemplate x:Key="ComboBoxTextBox" TargetType="{x:Type TextBox}">
+        <Border x:Name="PART_ContentHost" Focusable="False" Background="{TemplateBinding Background}" />
+    </ControlTemplate>
+    
+    <!-- TODO: Do the thing -->
+    <!-- ComboBox -->
+    <Style TargetType="{x:Type ComboBox}">
+        <Setter Property="SnapsToDevicePixels" Value="true"/>
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
+        <Setter Property="Foreground" Value="{StaticResource ComboBoxForeground}"/>
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}"></Setter>
+        <Setter Property="FontSize" Value="18"></Setter>
+        <Setter Property="Margin" Value="3"></Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ComboBox}">
+                    <Grid>
+                        <ToggleButton 
+                            Name="ToggleButton" 
+                            Template="{StaticResource ComboBoxToggleButton}" 
+                            Grid.Column="2" 
+                            Focusable="false"
+                            IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}"
+                            ClickMode="Press">
+                        </ToggleButton>
+                        <Border BorderThickness="2" BorderBrush="{StaticResource ComboBoxForeground}" CornerRadius="8,8,8,8">
+                            <ContentPresenter Name="ContentSite" IsHitTestVisible="False"  Content="{TemplateBinding SelectionBoxItem}"
+                                ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                Margin="3,3,23,3"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Left" />
+                        </Border>
+
+                        <TextBox x:Name="PART_EditableTextBox"
+                            Style="{x:Null}" 
+                            Template="{StaticResource ComboBoxTextBox}" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Center" 
+                            Margin="3,3,23,3"
+                            Focusable="True" 
+                            Background="White"
+                            Foreground="Green"
+                            Visibility="Hidden"
+                            IsReadOnly="{TemplateBinding IsReadOnly}"
+                            FontFamily="{StaticResource DefaultFont}"
+                            FontSize="18"/>
+                        <Popup 
+                            Name="Popup"
+                            Placement="Bottom"
+                            IsOpen="{TemplateBinding IsDropDownOpen}"
+                            AllowsTransparency="True" 
+                            Focusable="False"
+                            PopupAnimation="Slide">
+
+                            <Grid Name="DropDown"
+                              SnapsToDevicePixels="True"                
+                              MinWidth="{TemplateBinding ActualWidth}"
+                              MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                <Border 
+                                x:Name="DropDownBorder"
+                                Background="White"
+                                BorderThickness="2"
+                                BorderBrush="{StaticResource ComboBoxForeground}"
+                                    CornerRadius="8,8,8,8"/>
+                                <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                    <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                </ScrollViewer>
+                            </Grid>
+                        </Popup>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasItems" Value="false">
+                            <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                        <Trigger Property="IsGrouping" Value="true">
+                            <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                        </Trigger>
+                        <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="true">
+                            <Setter TargetName="DropDownBorder" Property="CornerRadius" Value="8"/>
+                            <Setter TargetName="DropDownBorder" Property="Margin" Value="0,2,0,0"/>
+                        </Trigger>
+                        <Trigger Property="IsEditable"  Value="true">
+                            <Setter Property="IsTabStop" Value="false"/>
+                            <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+  
+    
+    <!-- Button Resources -->
+    <SolidColorBrush x:Key="ButtonBackground" Color="#383D48"></SolidColorBrush>
+    <SolidColorBrush x:Key="ButtonForeground" Color="#959CAB"></SolidColorBrush>
+    <SolidColorBrush x:Key="ButtonBackgroundIsMouseOver" Color="#3C424E"></SolidColorBrush>
+    <SolidColorBrush x:Key="ButtonBackgroundIsPressed" Color="#2C313A"></SolidColorBrush>
+    <SolidColorBrush x:Key="ButtonForegroundIsMouseOver" Color="#CDD1D6"></SolidColorBrush>
+    <SolidColorBrush x:Key="ButtonForegroundIsPressed" Color="#CDD1D6"></SolidColorBrush>
+    
+    <!-- Button -->
+    <Style TargetType="{x:Type Button}">
+        <Setter Property="Cursor" Value="Hand"></Setter>
+        <Setter Property="Margin" Value="3"></Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="ButtonBorder" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Opacity="1.0" Background="{StaticResource ButtonBackground}" CornerRadius="4,4,4,4">
+                        <Grid>
+                            <ContentPresenter x:Name="ButtonContentPresenter" Margin="10, 0, 0, 0" TextElement.FontFamily="{StaticResource DefaultFont}" TextElement.FontSize="{TemplateBinding FontSize}" TextBlock.Foreground="{StaticResource ButtonForeground}" VerticalAlignment="Center" HorizontalAlignment="Center"></ContentPresenter>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>                      
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="{StaticResource ButtonBackgroundIsMouseOver}"></Setter>
+                            <Setter TargetName="ButtonContentPresenter" Property="TextBlock.Foreground" Value="{StaticResource ButtonForegroundIsMouseOver}"></Setter>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="{StaticResource ButtonBackgroundIsPressed}"></Setter>
+                            <Setter TargetName="ButtonContentPresenter" Property="TextBlock.Foreground" Value="{StaticResource ButtonForegroundIsPressed}"></Setter>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.5"></Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- Image Button -->
+    <Style TargetType="{x:Type controls:ImageButton}">
+        <Setter Property="Cursor" Value="Hand"></Setter>
+        <Setter Property="Margin" Value="3"></Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:ImageButton}">
+                    <Border x:Name="ButtonBorder" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Opacity="1.0" Background="{StaticResource ButtonBackground}" CornerRadius="4,4,4,4">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="{TemplateBinding Image}" Width="{TemplateBinding ImageWidth}" Height="{TemplateBinding ImageHeight}" Margin="5, 0, 0, 0" Visibility="{TemplateBinding Image, Converter={StaticResource NullVisibilityConverter}}" VerticalAlignment="Center"></Image>
+                            <ContentPresenter x:Name="ButtonContentPresenter" TextElement.FontFamily="{StaticResource DefaultFont}" TextElement.FontSize="{TemplateBinding FontSize}" TextBlock.Foreground="{StaticResource ButtonForeground}" VerticalAlignment="Center"></ContentPresenter>
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="{StaticResource ButtonBackgroundIsMouseOver}"></Setter>
+                            <Setter TargetName="ButtonContentPresenter" Property="TextBlock.Foreground" Value="{StaticResource ButtonForegroundIsMouseOver}"></Setter>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="{StaticResource ButtonBackgroundIsPressed}"></Setter>
+                            <Setter TargetName="ButtonContentPresenter" Property="TextBlock.Foreground" Value="{StaticResource ButtonForegroundIsPressed}"></Setter>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.5"></Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- LoadingIndicator Resources -->
+    <SolidColorBrush x:Key="LoadingIndicatorForeground" Color="#528BFF"></SolidColorBrush>
+    <system:Double x:Key="LoadingIndicatorDotWidth">8.00</system:Double>
+    <system:Double x:Key="LoadingIndicatorDotHeight">8.00</system:Double>
+    <system:Double x:Key="LoadingIndicatorDotRadiusX">8.00</system:Double>
+    <system:Double x:Key="LoadingIndicatorDotRadiusY">8.00</system:Double>
+    
+    <!-- LoadingIndicator -->
+    <Style TargetType="{x:Type controls:LoadingIndicator}">
+        <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
+        <Setter Property="VerticalAlignment" Value="Stretch"></Setter>
+        <Setter Property="Foreground" Value="{StaticResource LoadingIndicatorForeground}"></Setter>
+        <Setter Property="DotWidth" Value="{StaticResource LoadingIndicatorDotWidth}"></Setter>
+        <Setter Property="DotHeight" Value="{StaticResource LoadingIndicatorDotHeight}"></Setter>
+        <Setter Property="DotRadiusX" Value="{StaticResource LoadingIndicatorDotRadiusX}"></Setter>
+        <Setter Property="DotRadiusY" Value="{StaticResource LoadingIndicatorDotRadiusY}"></Setter>
+    </Style>
+
+</ResourceDictionary>
