@@ -41,10 +41,13 @@ public partial class App : Application
 {
     protected override void OnStartup(StartupEventArgs startupEventArgs)
     {
+    
         startupEventArgs
             .Register(assembly =>
             {
               // Which dlls should be looked at inside the app domain when registering views/viewModels
+              // Views and view models should be in the format of {name}View and {name}ViewModel
+              // Ex: ApplicationView (UserControl) ApplicationViewModel (ViewModel)
               return assembly.FullName.StartsWith("Osc")
             })
             .Container(container =>
