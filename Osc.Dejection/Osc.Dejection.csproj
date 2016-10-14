@@ -75,7 +75,6 @@
     <Compile Include="Framework\DialogSettings.cs" />
     <Compile Include="Framework\IDataTemplateService.cs" />
     <Compile Include="Framework\IDialogService.cs" />
-    <Compile Include="Framework\IDialogSettings.cs" />
     <Compile Include="Framework\IInitializationService.cs" />
     <Compile Include="Framework\InitializationService.cs" />
     <Compile Include="Framework\IViewModelFactory.cs" />

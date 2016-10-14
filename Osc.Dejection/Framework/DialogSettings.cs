@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace Osc.Dejection.Framework
 {
-    public class DialogSettings : IDialogSettings
+    public class DialogSettings
     {
         public bool AllowsTransparency { get; set; }
 

@@ -105,9 +105,9 @@ namespace Osc.Dejection.Framework
         /// <typeparam name="TSource"></typeparam>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        public bool? ShowDialog<TSource>() 
+        public bool? ShowDialog<TSource>()
             where TSource : ViewModelBase
-        {            
+        {
             return CreateWindow<TSource>()
                 .ShowDialog();
         }
@@ -130,7 +130,7 @@ namespace Osc.Dejection.Framework
 
             return taskCompletionSource.Task;
         }
-        
+
         /// <summary>
         /// Closes the active dialog specified
         /// </summary>
@@ -151,40 +151,25 @@ namespace Osc.Dejection.Framework
 
             window.Closing -= ClosingHandler;
 
-            window.Close();            
+            window.Close();
 
             windowCollection.Remove(window);
         }
 
         private Window CreateWindow<TSource>()
-             where TSource : ViewModelBase
-        {
-            return CreateWindow<TSource>(new DialogSettings()
-            {
-                AllowsTransparency = false,
-                PreventClosing = false,
-                ResizeMode = ResizeMode.CanResize,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                WindowState = WindowState.Normal,
-                WindowStyle = WindowStyle.SingleBorderWindow,
-                SizeToContent = SizeToContent.WidthAndHeight,
-            });
-        }
-
-        private Window CreateWindow<TSource>(IDialogSettings dialogSettings)
             where TSource : ViewModelBase
         {
             ViewModelBase viewModel = viewModelFactory.CreateViewModel<TSource>();
             viewModel.ThrowIfNull(nameof(viewModel));
-            
+
             Window parentWindow = ParentWindow;
 
             Window newWindow;
 
             if (parentWindow.IsNull())
-                newWindow = CreateMainWindow(viewModel, dialogSettings);
+                newWindow = CreateMainWindow(viewModel);
             else
-                newWindow = CreateChildWindow(viewModel, parentWindow, dialogSettings);
+                newWindow = CreateChildWindow(viewModel, parentWindow);
 
             dataTemplateService.InjectDataTemplates(newWindow);
 
@@ -195,25 +180,18 @@ namespace Osc.Dejection.Framework
             return newWindow;
         }
 
-        
-
         private void ClosingHandler(object sender, CancelEventArgs e)
         {
             e.Cancel = true;
         }
-
-   
-
-        private Window CreateChildWindow(ViewModelBase viewModel, Window parentWindow, IDialogSettings dialogSettings)
+        
+        private Window CreateChildWindow(ViewModelBase viewModel, Window parentWindow)
         {
-            IDialogSettings windowSettings = dialogSettings;
-
             Window window = new Window()
             {
-                WindowState = windowSettings.WindowState,
-                WindowStyle = windowSettings.WindowStyle,
-                ResizeMode = windowSettings.ResizeMode,
-                WindowStartupLocation = windowSettings.WindowStartupLocation,
+                WindowStyle = WindowStyle.None,
+                ResizeMode = ResizeMode.NoResize,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 SizeToContent = SizeToContent.WidthAndHeight,
                 Width = parentWindow.ActualWidth,
                 Height = parentWindow.ActualHeight,
@@ -227,34 +205,28 @@ namespace Osc.Dejection.Framework
                 },
             };
 
-            if (windowSettings.PreventClosing)
-                window.Closing += ClosingHandler;
+            window.Closing += ClosingHandler;
 
             return window;
         }
 
-        private Window CreateMainWindow(ViewModelBase viewModel, IDialogSettings dialogSettings)
+        private Window CreateMainWindow(ViewModelBase viewModel)
         {
-            IDialogSettings windowSettings = dialogSettings;
-
             Window window = new Window()
             {
-                WindowState = windowSettings.WindowState,
-                WindowStyle = windowSettings.WindowStyle,
-                ResizeMode = windowSettings.ResizeMode,
+                WindowState = WindowState.Maximized,
+                WindowStyle = WindowStyle.SingleBorderWindow,
+                ResizeMode = ResizeMode.CanResize,
                 AllowsTransparency = false,
                 Tag = viewModel.GetType(),
                 Content = new ContentControl()
                 {
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Stretch,
-                    Content = viewModel,       
+                    Content = viewModel,
                 },
             };
-
-            if (windowSettings.PreventClosing)
-                window.Closing += ClosingHandler;
-
+            
             return window;
         }
         #endregion
