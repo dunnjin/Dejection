@@ -67,27 +67,21 @@ public partial class App : Application
 Uses view model types to create window dialogs, decoupled from usercontrols or views
 ```csharp
 
-// Will create a new window (from default or given settings) and inject its view/viewModel into its resources
-// Behaves like the standard ShowDialog (async also supported)
+// Will create a new window and inject its view/viewModel into its resources
+// Behaves like the standard Windows ShowDialog / Show (async also supported)
 IDialogService dialogService = new DialogService();
 dialogService.ShowDialog<SampleViewModel>();
 
+IDialogService dialogService = new DialogService();
+dialogService.Show<SampleViewModel>();
 ```
+
+Close a dialog based off of ViewModel
 ```csharp
 
-// Will create a new window (from default or given settings) and inject its view/viewModel into its resources
-// Behaves like the standard Show (includes dialog settings)
+// Will close the topmost dialog of the given ViewModel when called
 IDialogService dialogService = new DialogService();
-dialogService.Show<SampleViewModel>(new DialogSettings()
-    {
-        AllowsTransparency = false,
-        PreventClosing = false,
-        ResizeMode = ResizeMode.CanResize,
-        WindowStartupLocation = WindowStartupLocation.CenterOwner,
-        WindowState = WindowState.Normal,
-        WindowStyle = WindowStyle.SingleBorderWindow,
-        SizeToContent = SizeToContent.WidthAndHeight,
-    });
+dialogService.Close<SampleViewModel>();
 ```
 
 
