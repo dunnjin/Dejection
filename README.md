@@ -278,7 +278,7 @@ Validation
                     {
                         // Save RequiredField
                     })
-                    .CanExecute(obj =>
+                    .CanExecute(() =>
                     {
                         // If Required attribute is satisfied then IsValidated will result to true and the SaveCommand will be allowed to execute, else the button will not be allowed to be pressed
                         return base.IsValidated;
