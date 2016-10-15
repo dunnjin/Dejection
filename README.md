@@ -133,7 +133,7 @@ Uses a simple fluent language as a wrapper for a ICommand implementation
 ```csharp
 ICommandService commandService = new CommandService();
 commandService
-    .Execute(obj =>
+    .Execute(() =>
     {
         // Do something
     })
@@ -144,7 +144,7 @@ commandService
 Catch exceptions
 ```csharp
 commandService
-    .Execute(obj =>
+    .Execute(() =>
     {
         // Do something
     })
@@ -157,7 +157,7 @@ commandService
 Run without returning ICommand
 ```csharp
 commandService
-    .Execute(obj =>
+    .Execute(() =>
     {
         // Do something
     })
@@ -168,11 +168,11 @@ commandService
 Can Execute
 ```csharp
 commandService
-    .Execute(obj =>
+    .Execute(() =>
     {
         // Do something
     })
-    .CanExecute(obj =>
+    .CanExecute(() =>
     {
         // Dictates whether the command can be executed
         // Also tied to ICommand CanExecute integrated with WPF
@@ -274,7 +274,7 @@ Validation
             get
             {
                 return _commandService
-                    .Execute(obj =>
+                    .Execute(() =>
                     {
                         // Save RequiredField
                     })
@@ -310,7 +310,7 @@ Validation
 ## Example
 
 A sample project can be found [here](https://github.com/osc-solutions/Dejection/tree/master/Osc.Dejection.Sample)
-Sample project provides several different examples of scenarios, however, there is still more functionality that exists not included
+. Sample project provides several different examples of scenarios, however, there is still more functionality that exists not included. This also assumes you understand the MVVM pattern.
 
 ## License
 
