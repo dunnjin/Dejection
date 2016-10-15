@@ -52,7 +52,7 @@ namespace Osc.Dejection.Sample.ViewModels
                     })
                     .OnException<Exception>(obj =>
                     {
-                        // Log something maybe... I'm not the boss of your life
+                       
                     })
                     .Relay();
             }

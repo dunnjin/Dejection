@@ -44,7 +44,7 @@ namespace Osc.Dejection.Navigation
             where Owner : ViewModelBase
             where Target : ViewModelBase
         {
-            ViewModelBase owner = dialogService.ActiveWindows
+            ViewModelBase owner = dialogService.ActiveDialogs
                 .Select(obj => FindOwner<Owner>((obj.Content as ContentControl)?.Content as ViewModelBase))
                 .FirstOrDefault(obj => !obj.IsNull());
 

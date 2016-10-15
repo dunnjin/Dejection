@@ -12,28 +12,9 @@ using System.Collections.Concurrent;
 using System.ComponentModel;
 
 namespace Osc.Dejection.Framework
-{
-    public class DialogNotActiveException : Exception
-    {
-        public DialogNotActiveException()
-        {
-        }
-
-        public DialogNotActiveException(string message) : base(message)
-        {
-        }
-
-        public DialogNotActiveException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected DialogNotActiveException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
-    }
-
+{    
     public class DialogService : IDialogService
-    {
+    {  
         #region Fields
 
         private readonly IDataTemplateService dataTemplateService;
@@ -47,9 +28,9 @@ namespace Osc.Dejection.Framework
         #region Properties
 
         /// <summary>
-        /// Gets the top most dialog active
+        /// Gets the top most active dialog
         /// </summary>
-        public Window ParentWindow
+        public Window ActiveDialog
         {
             get
             {
@@ -60,7 +41,7 @@ namespace Osc.Dejection.Framework
         /// <summary>
         /// Gets all active dialogs
         /// </summary>
-        public IEnumerable<Window> ActiveWindows
+        public IEnumerable<Window> ActiveDialogs
         {
             get
             {
@@ -91,24 +72,24 @@ namespace Osc.Dejection.Framework
         /// Opens a window and returns without waiting for the newly opened window to close
         /// </summary>
         /// <exception cref="InvalidOperationException"></exception>
-        /// <typeparam name="TSource"></typeparam>
-        public void Show<TSource>()
-            where TSource : ViewModelBase
+        /// <typeparam name="TViewModel"></typeparam>
+        public void Show<TViewModel>()
+            where TViewModel : ViewModelBase
         {
-            CreateWindow<TSource>()
+            CreateWindow<TViewModel>()
                 .Show();
         }
 
         /// <summary>
         /// Opens a window and returns only when the newly opened window is closed
         /// </summary>
-        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TViewModel"></typeparam>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        public bool? ShowDialog<TSource>()
-            where TSource : ViewModelBase
+        public bool? ShowDialog<TViewModel>()
+            where TViewModel : ViewModelBase
         {
-            return CreateWindow<TSource>()
+            return CreateWindow<TViewModel>()
                 .ShowDialog();
         }
 
@@ -116,13 +97,47 @@ namespace Osc.Dejection.Framework
         /// <summary>
         /// Opens a window and returns only when the newly opened window is closed... but asynchronously
         /// </summary>
-        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TViewModel"></typeparam>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        public Task<bool?> ShowDialogAsync<TSource>()
-            where TSource : ViewModelBase
+        public Task<bool?> ShowDialogAsync<TViewModel>()
+            where TViewModel : ViewModelBase
         {
-            Window window = CreateWindow<TSource>();
+            Window window = CreateWindow<TViewModel>();
+
+            TaskCompletionSource<bool?> taskCompletionSource = new TaskCompletionSource<bool?>();
+
+            window.Dispatcher.BeginInvoke(new Action(() => taskCompletionSource.SetResult(window.ShowDialog())));
+
+            return taskCompletionSource.Task;
+        }
+
+        /// <summary>
+        /// Opens a window with the given view model by reference
+        /// </summary>
+        /// <typeparam name="TViewModel"></typeparam>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
+        public bool? ShowDialog<TViewModel>(TViewModel viewModel) where TViewModel : ViewModelBase
+        {
+            Window window = CreateWindow<TViewModel>();
+            ((ContentControl)window.Content).Content = viewModel;
+
+            return window.ShowDialog();
+        }
+
+
+        /// <summary>
+        /// Opens a window with the given view model by reference, asynchronously
+        /// </summary>
+        /// <typeparam name="TViewModel"></typeparam>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
+        public Task<bool?> ShowDialogAsync<TViewModel>(TViewModel viewModel) 
+            where TViewModel : ViewModelBase
+        {
+            Window window = CreateWindow<TViewModel>();
+            ((ContentControl)window.Content).Content = viewModel;
 
             TaskCompletionSource<bool?> taskCompletionSource = new TaskCompletionSource<bool?>();
 
@@ -135,14 +150,14 @@ namespace Osc.Dejection.Framework
         /// Closes the active dialog specified
         /// </summary>
         /// <exception cref="DialogNotActiveException">Closing something that isn't open</exception>
-        /// <typeparam name="TSource"></typeparam>
-        public void Close<TSource>()
-            where TSource : ViewModelBase
+        /// <typeparam name="TViewModel"></typeparam>
+        public void Close<TViewModel>()
+            where TViewModel : ViewModelBase
         {
-            Window window = windowCollection.FirstOrDefault(obj => obj.Tag as Type == typeof(TSource));
+            Window window = windowCollection.FirstOrDefault(obj => obj.Tag as Type == typeof(TViewModel));
 
             if (window.IsNull())
-                throw new DialogNotActiveException(typeof(TSource).Name);
+                return;
 
             ViewModelBase viewModel = (window.Content as ContentControl)?.Content as ViewModelBase;
 
@@ -156,13 +171,13 @@ namespace Osc.Dejection.Framework
             windowCollection.Remove(window);
         }
 
-        private Window CreateWindow<TSource>()
-            where TSource : ViewModelBase
+        private Window CreateWindow<TViewModel>()
+            where TViewModel : ViewModelBase
         {
-            ViewModelBase viewModel = viewModelFactory.CreateViewModel<TSource>();
+            ViewModelBase viewModel = viewModelFactory.CreateViewModel<TViewModel>();
             viewModel.ThrowIfNull(nameof(viewModel));
 
-            Window parentWindow = ParentWindow;
+            Window parentWindow = ActiveDialog;
 
             Window newWindow;
 
@@ -229,6 +244,9 @@ namespace Osc.Dejection.Framework
             
             return window;
         }
+
+
+
         #endregion
     }
 }

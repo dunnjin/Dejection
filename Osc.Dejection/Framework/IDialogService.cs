@@ -9,20 +9,26 @@ namespace Osc.Dejection.Framework
 {
     public interface IDialogService
     {
-        Window ParentWindow { get; }
+        Window ActiveDialog { get; }
 
-        IEnumerable<Window> ActiveWindows { get; }
+        IEnumerable<Window> ActiveDialogs { get; }
 
-        void Show<TSource>()
-            where TSource : ViewModelBase;
+        void Show<TViewModel>()
+            where TViewModel : ViewModelBase;
 
-        bool? ShowDialog<TSource>()
-            where TSource : ViewModelBase;
+        bool? ShowDialog<TViewModel>()
+            where TViewModel : ViewModelBase;
 
-        Task<bool?> ShowDialogAsync<TSource>()
-            where TSource : ViewModelBase;
+        Task<bool?> ShowDialogAsync<TViewModel>()
+            where TViewModel : ViewModelBase;
 
-        void Close<TSource>()
-            where TSource : ViewModelBase; 
+        bool? ShowDialog<TViewModel>(TViewModel viewModel)
+            where TViewModel : ViewModelBase;
+
+        Task<bool?> ShowDialogAsync<TViewModel>(TViewModel viewModel)
+            where TViewModel : ViewModelBase;
+
+        void Close<TViewModel>()
+            where TViewModel : ViewModelBase;        
     }
 }

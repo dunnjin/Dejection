@@ -63,6 +63,13 @@ namespace Osc.Dejection.Sample.ViewModels
             this.dialogService = dialogService;
         }
 
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            dialogService.ActiveDialog.WindowState = System.Windows.WindowState.Maximized;
+        }
+
 
     }
     
