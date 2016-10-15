@@ -14,7 +14,7 @@ namespace Osc.Dejection.Framework
     {
         #region Fields
 
-        private Dictionary<string, string> errors = new Dictionary<string, string>();
+        private Dictionary<string, string> _errors = new Dictionary<string, string>();
 
         private ViewModelBase selectedViewModel;   
 
@@ -29,7 +29,12 @@ namespace Osc.Dejection.Framework
 
         public string Error
         {
-            get { return errors.FirstOrDefault(x => !string.IsNullOrEmpty(x.Value)).Value; }
+            get { return _errors.FirstOrDefault(x => !string.IsNullOrEmpty(x.Value)).Value; }
+        }
+
+        public bool IsValidated
+        {
+            get { return string.IsNullOrEmpty(Error); }
         }
 
         public bool IsActive { get; private set; }
@@ -65,13 +70,13 @@ namespace Osc.Dejection.Framework
         protected virtual string OnValidate(string propertyName)
         {
 
-            if (!errors.ContainsKey(propertyName))
-                errors.Add(propertyName, string.Empty);
+            if (!_errors.ContainsKey(propertyName))
+                _errors.Add(propertyName, string.Empty);
             
 
-            PropertyInfo propertyInfo = this.GetType().GetProperty(propertyName);
+            var propertyInfo = this.GetType().GetProperty(propertyName);
 
-            List<ValidationResult> results = new List<ValidationResult>();
+            var results = new List<ValidationResult>();
 
             if (!Validator.TryValidateProperty(
                                       propertyInfo.GetValue(this, null),
@@ -81,14 +86,14 @@ namespace Osc.Dejection.Framework
                                       },
                                       results))
             {
-                ValidationResult validationResult = results.First();
+                var validationResult = results.First();
 
-                errors[propertyName] = validationResult.ErrorMessage;
+                _errors[propertyName] = validationResult.ErrorMessage;
 
                 return validationResult.ErrorMessage;
             }
 
-            errors[propertyName] = string.Empty;
+            _errors[propertyName] = string.Empty;
 
             return string.Empty;
         }

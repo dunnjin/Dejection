@@ -81,19 +81,10 @@ namespace Osc.Dejection.Commands
         void Run();
     }
 
-    public interface ICommandData
-    {
-        string ClassName { get; set; }
-
-        string MethodName { get; set; }
-
-        int LineNumber { get; set; }
-    }
-
     /// <summary>
     /// Contains caller member information given by compiler services
     /// </summary>
-    public class CommandData : ICommandData
+    public class CommandData
     {
         public string ClassName { get; set; }
 
@@ -107,9 +98,9 @@ namespace Osc.Dejection.Commands
     /// </summary>
     public interface ICommandListener
     {
-        Action<ICommandData> Execute { get; set; }
-        Action<Func<bool>, ICommandData> CanExecute { get; set; }
-        Action<Exception, ICommandData> OnException { get; set; }
+        Action<CommandData> Execute { get; set; }
+        Action<Func<bool>, CommandData> CanExecute { get; set; }
+        Action<Exception, CommandData> OnException { get; set; }
     }
 
     /// <summary>
@@ -117,8 +108,8 @@ namespace Osc.Dejection.Commands
     /// </summary>
     public class CommandListener : ICommandListener
     {
-        public Action<ICommandData> Execute { get; set; }
-        public Action<Func<bool>, ICommandData> CanExecute { get; set; }
-        public Action<Exception, ICommandData> OnException { get; set; }
+        public Action<CommandData> Execute { get; set; }
+        public Action<Func<bool>, CommandData> CanExecute { get; set; }
+        public Action<Exception, CommandData> OnException { get; set; }
     }
 }

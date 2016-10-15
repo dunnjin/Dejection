@@ -14,8 +14,8 @@ namespace Osc.Dejection.Commands
     {
         #region Fields
 
-        private readonly Stack<ICommandTree> undo = new Stack<ICommandTree>();
-        private readonly Stack<ICommandTree> redo = new Stack<ICommandTree>();
+        private readonly Stack<ICommandTree> _undo = new Stack<ICommandTree>();
+        private readonly Stack<ICommandTree> _redo = new Stack<ICommandTree>();
 
         #endregion
 
@@ -39,7 +39,7 @@ namespace Osc.Dejection.Commands
         public ICommandTree Execute(Action action, [CallerFilePath] string className = "",
             [CallerMemberName] string methodName = "", [CallerLineNumber] int lineNumber = 0)
         {
-            RelayCommand command = new RelayCommand()
+            var command = new RelayCommand()
             {
                 Listener = Listener,
                 CommandData = new CommandData()
@@ -63,7 +63,7 @@ namespace Osc.Dejection.Commands
         public ICommandTreeToStack ExecuteToStack(Action action, [CallerFilePath] string className = "",
             [CallerMemberName] string methodName = "", [CallerLineNumber] int lineNumber = 0)
         {
-            RelayCommand command = new RelayCommand()
+            var command = new RelayCommand()
             {
                 Listener = Listener,
                 CommandData = new CommandData()
@@ -74,9 +74,9 @@ namespace Osc.Dejection.Commands
                 },
             };
 
-            undo.Push(command);
+            _undo.Push(command);
 
-            redo.Clear();
+            _redo.Clear();
 
             return command.ExecuteToStack(action);
         }
@@ -86,17 +86,17 @@ namespace Osc.Dejection.Commands
         /// </summary>
         public void Undo()
         {
-            if (undo.Count.LessThanOrEqual(0))
+            if (_undo.Count.LessThanOrEqual(0))
                 return;
 
-            ICommandTree command = undo.Pop();
+            var command = _undo.Pop();
 
             if (command.IsNull())
                 return;
 
             command.Undo();
 
-            redo.Push(command);
+            _redo.Push(command);
         }
 
         /// <summary>
@@ -104,17 +104,17 @@ namespace Osc.Dejection.Commands
         /// </summary>
         public void Redo()
         {
-            if (redo.Count.LessThanOrEqual(0))
+            if (_redo.Count.LessThanOrEqual(0))
                 return;
 
-            ICommandTree command = redo.Pop();
+            var command = _redo.Pop();
 
             if (command.IsNull())
                 return;
 
             command.Redo();
 
-            undo.Push(command);
+            _undo.Push(command);
         }
 
         #endregion

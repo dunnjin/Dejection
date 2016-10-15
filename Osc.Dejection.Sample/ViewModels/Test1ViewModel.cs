@@ -12,31 +12,34 @@ namespace Osc.Dejection.Sample.ViewModels
 {
     public class Test1ViewModel : ViewModelBase
     {
-        private readonly ICommandService commandService;
-        private readonly INavigationService navigationService;
-        private readonly IDialogService dialogService;
+        private readonly ICommandService _commandService;
+        private readonly INavigationService _navigationService;
+        private readonly IDialogService _dialogService;
 
         public ICommand ShowDialogCommand
         {
             get
             {
-                return commandService
+                return _commandService
                     .Execute(() =>
                     {
-                        navigationService.Navigate<ApplicationViewModel, Test2ViewModel>();
-                        dialogService.ShowDialog<Test4ViewModel>();
+                        _navigationService.Navigate<ApplicationViewModel, Test2ViewModel>();
+
+                        // Create a new dialog window with the specified ViewModel 
+                        // The dialog settings are based off the View settings being displayed
+                        _dialogService.ShowDialog<Test4ViewModel>();
                     })
                     .Relay();
             }
         }
 
-        public Test1ViewModel(ICommandService commandService, INavigationService navigationService, IDialogService dialogService)
+        public Test1ViewModel(ICommandService commandService,
+            INavigationService navigationService,
+            IDialogService dialogService)
         {
-            this.commandService = commandService;
-            this.navigationService = navigationService;
-            this.dialogService = dialogService;
-
-
+            _commandService = commandService;
+            _navigationService = navigationService;
+            _dialogService = dialogService;
         }
     }
 }

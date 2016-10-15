@@ -11,20 +11,20 @@ namespace Osc.Dejection.Sample.ViewModels
 {
     public class Test5ViewModel : ViewModelBase
     {
-        private readonly ICommandService commandService;
-        private readonly IDialogService dialogService;
+        private readonly ICommandService _commandService;
+        private readonly IDialogService _dialogService;
 
-        private string text;
+        private string _text;
 
         public string Text
         {
-            get { return text; }
+            get { return _text; }
             set
             {
-                if (text == value)
+                if (_text == value)
                     return;
 
-                text = value;
+                _text = value;
 
                 NotifyPropertyChanged();
             }
@@ -34,10 +34,10 @@ namespace Osc.Dejection.Sample.ViewModels
         {
             get
             {
-                return commandService
+                return _commandService
                     .Execute(() =>
                     {
-                        dialogService.Close<Test5ViewModel>();
+                        _dialogService.Close<Test5ViewModel>();
                     })
                     .Relay();
             }
@@ -45,8 +45,8 @@ namespace Osc.Dejection.Sample.ViewModels
 
         public Test5ViewModel(ICommandService commandService, IDialogService dialogService)
         {
-            this.commandService = commandService;
-            this.dialogService = dialogService;
+            _commandService = commandService;
+            _dialogService = dialogService;
         }
     }
 }

@@ -13,12 +13,12 @@ namespace Osc.Dejection.Commands
     {
         #region Fields
 
-        private Action execute;
-        private Action unExecute;
+        private Action _execute;
+        private Action _unExecute;
 
-        private Func<bool> canExecute;
+        private Func<bool> _canExecute;
 
-        private Dictionary<Type, Action<Exception>> exceptions = new Dictionary<Type, Action<Exception>>();      
+        private Dictionary<Type, Action<Exception>> _exceptions = new Dictionary<Type, Action<Exception>>();      
 
         #endregion
 
@@ -33,7 +33,7 @@ namespace Osc.Dejection.Commands
         /// <summary>
         /// Gets or sets the caller member information given by compiler services
         /// </summary>
-        public ICommandData CommandData { get; set; }
+        public CommandData CommandData { get; set; }
 
         /// <summary>
         /// Gets or sets the actions that can be intercepted before the command is executed
@@ -49,13 +49,13 @@ namespace Osc.Dejection.Commands
         /// <returns></returns>
         public bool CanExecute(object parameter)
         {
-            if (canExecute.IsNull())
+            if (_canExecute.IsNull())
                 return true;
 
             if (!Listener.CanExecute.IsNull())
-                Listener.CanExecute(canExecute, CommandData);
+                Listener.CanExecute(_canExecute, CommandData);
 
-            return canExecute();
+            return _canExecute();
         }
 
         /// <summary>
@@ -69,19 +69,19 @@ namespace Osc.Dejection.Commands
                 if (!Listener.Execute.IsNull())
                     Listener.Execute(CommandData);
 
-                execute();
+                _execute();
             }
             catch (Exception exception)
             {
                 if (!Listener.OnException.IsNull())
                     Listener.OnException(exception, CommandData);
 
-                Type exceptionType = exception.GetType();
+                var exceptionType = exception.GetType();
                 
-                if (!exceptions.ContainsKey(exceptionType))
+                if (!_exceptions.ContainsKey(exceptionType))
                     return;
 
-                Action<Exception> commandException = exceptions[exceptionType];
+                var commandException = _exceptions[exceptionType];
                 commandException(exception);
             }
         }
@@ -106,20 +106,20 @@ namespace Osc.Dejection.Commands
         /// <exception cref="ArgumentNullException">Inverse action cannot be null</exception>
         public void Undo()
         {
-            unExecute.ThrowIfNull(nameof(unExecute));
+            _unExecute.ThrowIfNull(nameof(_unExecute));
 
             try
             {
-                unExecute();
+                _unExecute();
             }
             catch (Exception exception)
             {
-                Type exceptionType = exception.GetType();
+                var exceptionType = exception.GetType();
                 
-                if (!exceptions.ContainsKey(exceptionType))
+                if (!_exceptions.ContainsKey(exceptionType))
                     return;
 
-                Action<Exception> commandException = exceptions[exceptionType];
+                var commandException = _exceptions[exceptionType];
                 commandException(exception);
             }
 
@@ -131,20 +131,20 @@ namespace Osc.Dejection.Commands
         /// <exception cref="ArgumentNullException">Action cannot be null</exception>
         public void Redo()
         {
-            execute.ThrowIfNull(nameof(execute));
+            _execute.ThrowIfNull(nameof(_execute));
 
             try
             {
-                execute();
+                _execute();
             }
             catch (Exception exception)
             {
-                Type exceptionType = exception.GetType();
+                var exceptionType = exception.GetType();
 
-                if (!exceptions.ContainsKey(exceptionType))
+                if (!_exceptions.ContainsKey(exceptionType))
                     return;
 
-                Action<Exception> commandException = exceptions[exceptionType];
+                var commandException = _exceptions[exceptionType];
                 commandException(exception);
             }
         }
@@ -153,17 +153,17 @@ namespace Osc.Dejection.Commands
         {
             action.ThrowIfNull(nameof(action));
 
-            unExecute = action;
+            _unExecute = action;
 
             return this;
         }
 
         public ICommandTree OnException<TException>(Action<Exception> action) where TException : Exception
         {
-            if (exceptions.ContainsKey(typeof(TException)))
+            if (_exceptions.ContainsKey(typeof(TException)))
                 throw new ArgumentException("Exception already expected");
 
-            exceptions.Add(typeof(TException), action);
+            _exceptions.Add(typeof(TException), action);
 
             return this;
         }
@@ -172,7 +172,7 @@ namespace Osc.Dejection.Commands
         {
             predicate.ThrowIfNull(nameof(predicate));
 
-            canExecute = predicate;
+            _canExecute = predicate;
 
             return this;
         }
@@ -181,10 +181,10 @@ namespace Osc.Dejection.Commands
         {
             action.ThrowIfNull(nameof(action));
 
-            if (exceptions.ContainsKey(typeof(TException)))
+            if (_exceptions.ContainsKey(typeof(TException)))
                 throw new ArgumentException("Exception already expected");
 
-            exceptions.Add(typeof(TException), action);
+            _exceptions.Add(typeof(TException), action);
 
             return this;
         }
@@ -193,7 +193,7 @@ namespace Osc.Dejection.Commands
         {
             predicate.ThrowIfNull(nameof(predicate));
 
-            canExecute = predicate;
+            _canExecute = predicate;
 
             return this;
         }
@@ -202,10 +202,10 @@ namespace Osc.Dejection.Commands
         {
             action.ThrowIfNull(nameof(action));
 
-            if (exceptions.ContainsKey(typeof(TException)))
+            if (_exceptions.ContainsKey(typeof(TException)))
                 throw new ArgumentException("Exception already expected");
 
-            exceptions.Add(typeof(TException), action);
+            _exceptions.Add(typeof(TException), action);
 
             return this;
         }
@@ -214,7 +214,7 @@ namespace Osc.Dejection.Commands
         {
             action.ThrowIfNull(nameof(action));
 
-            unExecute = action;
+            _unExecute = action;
 
             return this;
         }
@@ -223,10 +223,10 @@ namespace Osc.Dejection.Commands
         {
             action.ThrowIfNull(nameof(action));
 
-            if (exceptions.ContainsKey(typeof(TException)))
+            if (_exceptions.ContainsKey(typeof(TException)))
                 throw new ArgumentException("Exception already expected");
 
-            exceptions.Add(typeof(TException), action);
+            _exceptions.Add(typeof(TException), action);
 
             return this;
         }
@@ -235,10 +235,10 @@ namespace Osc.Dejection.Commands
         {
             action.ThrowIfNull(nameof(action));
 
-            if (exceptions.ContainsKey(typeof(TException)))
+            if (_exceptions.ContainsKey(typeof(TException)))
                 throw new ArgumentException("Exception already expected");
 
-            exceptions.Add(typeof(TException), action);
+            _exceptions.Add(typeof(TException), action);
 
             return this;
         }
@@ -247,10 +247,10 @@ namespace Osc.Dejection.Commands
         {
             action.ThrowIfNull(nameof(action));
 
-            if (exceptions.ContainsKey(typeof(TException)))
+            if (_exceptions.ContainsKey(typeof(TException)))
                 throw new ArgumentException("Exception already expected");
 
-            exceptions.Add(typeof(TException), action);
+            _exceptions.Add(typeof(TException), action);
 
             return this;
         }
@@ -259,7 +259,7 @@ namespace Osc.Dejection.Commands
         {
             action.ThrowIfNull(nameof(action));
 
-            execute = action;
+            _execute = action;
 
             return this;
         }
@@ -268,7 +268,7 @@ namespace Osc.Dejection.Commands
         {
             action.ThrowIfNull(nameof(action));
 
-            execute = action;
+            _execute = action;
 
             return this;
         }

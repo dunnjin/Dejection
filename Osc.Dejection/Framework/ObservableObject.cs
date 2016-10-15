@@ -26,7 +26,7 @@ namespace Osc.Dejection.Framework
         /// <param name="propertyName"></param>
         public void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
+            var handler = PropertyChanged;
 
             if (handler != null)
             {

@@ -72,7 +72,6 @@
     <Compile Include="Extensions\IntegerExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Commands\ICommandService.cs" />
-    <Compile Include="Framework\DialogSettings.cs" />
     <Compile Include="Framework\IDataTemplateService.cs" />
     <Compile Include="Framework\IDialogService.cs" />
     <Compile Include="Framework\IInitializationService.cs" />

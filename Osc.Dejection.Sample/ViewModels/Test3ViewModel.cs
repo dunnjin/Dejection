@@ -12,17 +12,17 @@ namespace Osc.Dejection.Sample.ViewModels
 {
     public class Test3ViewModel : ViewModelBase
     {
-        private readonly ICommandService commandService;
-        private readonly INavigationService navigationService;
+        private readonly ICommandService _commandService;
+        private readonly INavigationService _navigationService;
 
         public ICommand NavigateTest1Command
         {
             get
             {
-                return commandService
+                return _commandService
                     .Execute(() =>
                     {
-                        navigationService.Navigate<Test3ViewModel, Test1ViewModel>();
+                        _navigationService.Navigate<Test3ViewModel, Test1ViewModel>();
                     })
                     .Relay();
             }
@@ -32,10 +32,10 @@ namespace Osc.Dejection.Sample.ViewModels
         {
             get
             {
-                return commandService
+                return _commandService
                     .Execute(() =>
                     {
-                        navigationService.Navigate<Test3ViewModel, Test2ViewModel>();
+                        _navigationService.Navigate<Test3ViewModel, Test2ViewModel>();
                     })
                     .Relay();
             }
@@ -45,23 +45,28 @@ namespace Osc.Dejection.Sample.ViewModels
         {
             get
             {
-                return commandService                                        
+                return _commandService                                        
                     .Execute(() =>
                     {
-                        throw new Exception("Exception was thrown");
+                        throw new ArgumentException("Exception was thrown");
+                    })
+                    .OnException<ArgumentException>(obj =>
+                    {
+                        // ArgumentException will be routed here
                     })
                     .OnException<Exception>(obj =>
                     {
-                       
+                        // Acts like Catch inside the Try/Catch
                     })
                     .Relay();
             }
         }
 
-        public Test3ViewModel(ICommandService commandService, INavigationService navigationService)
+        public Test3ViewModel(ICommandService commandService,
+            INavigationService navigationService)
         {
-            this.commandService = commandService;
-            this.navigationService = navigationService;
+            _commandService = commandService;
+            _navigationService = navigationService;
         }
     }
 }

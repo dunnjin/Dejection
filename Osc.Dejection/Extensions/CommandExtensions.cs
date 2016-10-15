@@ -10,7 +10,7 @@ namespace Osc.Dejection.Extensions
 {
     public static class CommandExtensions
     {
-        public static string ToReadableFormat(this ICommandData commandData)
+        public static string ToReadableFormat(this CommandData commandData)
         {
             return $"ClassName: {Path.GetFileName(commandData.ClassName)} | MethodName: {commandData.MethodName} | LineNumber: {commandData.LineNumber}";
         }

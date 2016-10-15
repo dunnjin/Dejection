@@ -1,7 +1,7 @@
 # Dejection
 A simple convention-based MVVM framework for WPF
 
-
+Its used to
 
 ## Table of contents
 
@@ -14,10 +14,10 @@ A simple convention-based MVVM framework for WPF
 
 
 ## Implemented functionality
-* Automatically generated dynamic datatemplates
-* Dialog service via viewmodel type
-* Navigation service via viewmodel types
-* Fluent command service supporting undo/redo ICommand
+* Automatically generated dynamic datatemplates to bind ViewModel to Views via name convention
+* Dialog service via ViewModel type to manage windows/dialogs without connection to UserControls
+* Navigation service via ViewModel types to change ContentControl ViewModels inside views from any dialog from any action
+* Fluent command service supporting undo/redo that implements the ICommand interface
 
 
 
@@ -39,9 +39,13 @@ Install-Package Osc.Dejection
 ```csharp
 public partial class App : Application
 {
+   /// <summary>
+   /// Required entry point
+   /// Uses an extension on StartupEventArgs to start the app
+   /// </summary>
+   /// <param name="startupEventArgs"></param>
     protected override void OnStartup(StartupEventArgs startupEventArgs)
     {
-    
         startupEventArgs
             .Register(assembly =>
             {
@@ -52,10 +56,12 @@ public partial class App : Application
             })
             .Container(container =>
             {
-                // Register unity IoC dependencies
+                // NOTE: Dejection dependencies are all already registered
+
+                // Here you should register your dependencies which will automatically be resolved via creation of ViewModels
                 container.RegisterType<IApplicationService, ApplicationService>();
             })
-            // Starts a dialog with the given viewModel
+            // Starts a the main window with the given ViewModel
             .Start<ApplicationViewModel>();
     }
 }
@@ -64,10 +70,10 @@ public partial class App : Application
 
 
 ### Dialog Service
-Uses view model types to create window dialogs, decoupled from usercontrols or views
+Uses ViewModel types to create window dialogs, decoupled from UserControl's or Views
 ```csharp
 
-// Will create a new window and inject its view/viewModel into its resources
+// Will create a new window and inject its View/ViewModel into its resources
 // Behaves like the standard Windows ShowDialog / Show (async also supported)
 IDialogService dialogService = new DialogService();
 dialogService.ShowDialog<SampleViewModel>();
@@ -179,34 +185,34 @@ commandService
 Listeners
 ```csharp
 public partial class App : Application
+{
+   protected override void OnStartup(StartupEventArgs startupEventArgs)
    {
-       protected override void OnStartup(StartupEventArgs startupEventArgs)
-       {
-           startupEventArgs
-               .Register(assembly => assembly.FullName.StartsWith("Osc"))
-               .Container(container =>
+       startupEventArgs
+           .Register(assembly => assembly.FullName.StartsWith("Osc"))
+           .Container(container =>
+           {
+               // Can be used for global logging throughout the application
+               // Setup listeners
+               ICommandService commandService = container.Resolve<ICommandService>();
+
+               // Captures all exceptions that occur
+               commandService.Listener.OnException = (exception, data) =>
                {
-                   // Can be used for global logging throughout the application
-                   // Setup listeners
-                   ICommandService commandService = container.Resolve<ICommandService>();
+                     Console.WriteLine(exception.ToString());
+               };
 
-                   // Captures all exceptions that occur
-                   commandService.Listener.OnException = (exception, data) =>
-                   {
-                         Console.WriteLine(exception.ToString());
-                   };
-
-                   // Captures all actions executed
-                   commandService.Listener.Execute = data =>
-                   {
-                         Console.WriteLine($"Class: {data.ClassName}");
-                         Console.WriteLine($"Method: {data.MethodName}");
-                         Console.WriteLine($"Line Number: {data.LineNumber}");
-                   };
-               })
-               .Start<ApplicationViewModel>();
-       }
+               // Captures all actions executed
+               commandService.Listener.Execute = data =>
+               {
+                     Console.WriteLine($"Class: {data.ClassName}");
+                     Console.WriteLine($"Method: {data.MethodName}");
+                     Console.WriteLine($"Line Number: {data.LineNumber}");
+               };
+           })
+           .Start<ApplicationViewModel>();
    }
+}
 ```
 
 Undo/Redo
@@ -240,11 +246,71 @@ commandService.Redo();
 // i = 1
 ```
 
+Validation
+```csharp
+    public class TestViewModel : ViewModelBase
+    {
+        private readonly ICommandService _commandService;
+
+        private string _requiredField;
+
+        [Required]
+        public string RequiredField
+        {
+            get { return _requiredField; }
+            set
+            {
+                if(_requiredField == value)
+                    return;
+
+                _requiredField = value;
+
+                NotifyPropertyChanged();
+            }
+        }
+
+        public ICommand SaveCommand
+        {
+            get
+            {
+                return _commandService
+                    .Execute(obj =>
+                    {
+                        // Save RequiredField
+                    })
+                    .CanExecute(obj =>
+                    {
+                        // If Required attribute is satisfied then IsValidated will result to true and the SaveCommand will be allowed to execute, else the button will not be allowed to be pressed
+                        return base.IsValidated;
+                    })
+                    .Relay();
+
+            }
+        }
+    }
+```
+
+```xaml
+<!-- Note all views should be usercontrols to support reuseability -->
+<UserControl x:Class="Osc.Dejection.Sample.Views.SampleView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300" Background="{StaticResource MainBackgroundColorBrush}">
+    <StackPanel>
+        <TextBox Text="{Binding RequiredField, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+        <Button Content="Save" Command="{Binding SaveCommand}"/>
+    </StackPanel>
+</UserControl>
+```
 
 
 ## Example
 
 A sample project can be found [here](https://github.com/osc-solutions/Dejection/tree/master/Osc.Dejection.Sample)
+Sample project provides several different examples of scenarios, however, there is still more functionality that exists not included
 
 ## License
 

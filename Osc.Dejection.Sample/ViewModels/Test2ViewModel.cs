@@ -12,19 +12,19 @@ namespace Osc.Dejection.Sample.ViewModels
 {
     public class Test2ViewModel : ViewModelBase
     {
-        private readonly ICommandService commandService;
-        private readonly INavigationService navigationService;
-        private readonly IDialogService dialogService;
-        private readonly IViewModelFactory viewModelFactory;
+        private readonly ICommandService _commandService;
+        private readonly INavigationService _navigationService;
+        private readonly IDialogService _dialogService;
+        private readonly IViewModelFactory _viewModelFactory;
 
         public ICommand NavigateCommand
         {
             get
             {
-                return commandService
+                return _commandService
                     .Execute(() =>
                     {
-                        navigationService.Navigate<ApplicationViewModel, Test1ViewModel>();
+                        _navigationService.Navigate<ApplicationViewModel, Test1ViewModel>();
                     })
                     .Relay();
             }
@@ -34,15 +34,17 @@ namespace Osc.Dejection.Sample.ViewModels
         {
             get
             {
-                return commandService
-                    .Execute(async () =>
+                return _commandService
+                    .Execute(() =>
                     {
-                        var viewModelTest = viewModelFactory.CreateViewModel<Test5ViewModel>();
-                        viewModelTest.Text = @"  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec adipiscing
-    nulla quis libero egestas lobortis. Duis blandit imperdiet ornare. Nulla
-    ac arcu ut purus placerat congue. Integer pretium fermentum gravida.";
-
-                        await dialogService.ShowDialogAsync(viewModelTest);                                                
+                        // Use ViewModel factory to create the specified ViewModel
+                        var viewModelTest = _viewModelFactory.CreateViewModel<Test5ViewModel>();
+                        viewModelTest.Text = @" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec adipiscing
+                                                nulla quis libero egestas lobortis. Duis blandit imperdiet ornare. Nulla
+                                                ac arcu ut purus placerat congue. Integer pretium fermentum gravida.";
+                        // Use the overload to pass a reference to a ViewModel
+                        // This could be used as Confirm/Cancel dialogs to have dialog service display the dialog and have a reference to the ViewModel to gain its user specified data
+                        _dialogService.ShowDialog(viewModelTest);                                                
                     })
                     .Relay();
             }
@@ -53,10 +55,10 @@ namespace Osc.Dejection.Sample.ViewModels
             IDialogService dialogService,
             IViewModelFactory viewModelFactory)
         {
-            this.commandService = commandService;
-            this.navigationService = navigationService;
-            this.dialogService = dialogService;
-            this.viewModelFactory = viewModelFactory;
+            _commandService = commandService;
+            _navigationService = navigationService;
+            _dialogService = dialogService;
+            _viewModelFactory = viewModelFactory;
         }
 
         

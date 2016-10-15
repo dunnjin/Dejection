@@ -17,11 +17,11 @@ namespace Osc.Dejection.Framework
     {  
         #region Fields
 
-        private readonly IDataTemplateService dataTemplateService;
-        private readonly IViewModelFactory viewModelFactory;
-        private readonly IInitializationService initializationService;
+        private readonly IDataTemplateService _dataTemplateService;
+        private readonly IViewModelFactory _viewModelFactory;
+        private readonly IInitializationService _initializationService;
 
-        private List<Window> windowCollection = new List<Window>();
+        private List<Window> _windowCollection = new List<Window>();
 
         #endregion
 
@@ -34,7 +34,7 @@ namespace Osc.Dejection.Framework
         {
             get
             {
-                return windowCollection.FirstOrDefault();
+                return _windowCollection.FirstOrDefault();
             }
         }
 
@@ -45,7 +45,7 @@ namespace Osc.Dejection.Framework
         {
             get
             {
-                return windowCollection;
+                return _windowCollection;
             }
         }
 
@@ -53,15 +53,17 @@ namespace Osc.Dejection.Framework
 
         #region Initialize
 
-        public DialogService(IDataTemplateService dataTemplateService, IViewModelFactory viewModelFactory, IInitializationService initializationService)
+        public DialogService(IDataTemplateService dataTemplateService,
+            IViewModelFactory viewModelFactory,
+            IInitializationService initializationService)
         {
-            this.dataTemplateService = dataTemplateService;
-            this.viewModelFactory = viewModelFactory;
-            this.initializationService = initializationService;
+            _dataTemplateService = dataTemplateService;
+            _viewModelFactory = viewModelFactory;
+            _initializationService = initializationService;
 
-            this.dataTemplateService.ThrowIfNull(nameof(dataTemplateService));
-            this.viewModelFactory.ThrowIfNull(nameof(viewModelFactory));
-            this.initializationService.ThrowIfNull(nameof(initializationService));
+            _dataTemplateService.ThrowIfNull(nameof(dataTemplateService));
+            _viewModelFactory.ThrowIfNull(nameof(viewModelFactory));
+            _initializationService.ThrowIfNull(nameof(initializationService));
         }
 
         #endregion
@@ -103,9 +105,9 @@ namespace Osc.Dejection.Framework
         public Task<bool?> ShowDialogAsync<TViewModel>()
             where TViewModel : ViewModelBase
         {
-            Window window = CreateWindow<TViewModel>();
+            var window = CreateWindow<TViewModel>();
 
-            TaskCompletionSource<bool?> taskCompletionSource = new TaskCompletionSource<bool?>();
+            var taskCompletionSource = new TaskCompletionSource<bool?>();
 
             window.Dispatcher.BeginInvoke(new Action(() => taskCompletionSource.SetResult(window.ShowDialog())));
 
@@ -120,7 +122,7 @@ namespace Osc.Dejection.Framework
         /// <returns></returns>
         public bool? ShowDialog<TViewModel>(TViewModel viewModel) where TViewModel : ViewModelBase
         {
-            Window window = CreateWindow<TViewModel>();
+            var window = CreateWindow<TViewModel>();
             ((ContentControl)window.Content).Content = viewModel;
 
             return window.ShowDialog();
@@ -136,10 +138,10 @@ namespace Osc.Dejection.Framework
         public Task<bool?> ShowDialogAsync<TViewModel>(TViewModel viewModel) 
             where TViewModel : ViewModelBase
         {
-            Window window = CreateWindow<TViewModel>();
+            var window = CreateWindow<TViewModel>();
             ((ContentControl)window.Content).Content = viewModel;
 
-            TaskCompletionSource<bool?> taskCompletionSource = new TaskCompletionSource<bool?>();
+            var taskCompletionSource = new TaskCompletionSource<bool?>();
 
             window.Dispatcher.BeginInvoke(new Action(() => taskCompletionSource.SetResult(window.ShowDialog())));
 
@@ -154,30 +156,30 @@ namespace Osc.Dejection.Framework
         public void Close<TViewModel>()
             where TViewModel : ViewModelBase
         {
-            Window window = windowCollection.FirstOrDefault(obj => obj.Tag as Type == typeof(TViewModel));
+            var window = _windowCollection.FirstOrDefault(obj => obj.Tag as Type == typeof(TViewModel));
 
             if (window.IsNull())
                 return;
 
-            ViewModelBase viewModel = (window.Content as ContentControl)?.Content as ViewModelBase;
+            var viewModel = (window.Content as ContentControl)?.Content as ViewModelBase;
 
             if (!viewModel.IsNull())
-                initializationService.UnInitialize(viewModel);
+                _initializationService.UnInitialize(viewModel);
 
             window.Closing -= ClosingHandler;
 
             window.Close();
 
-            windowCollection.Remove(window);
+            _windowCollection.Remove(window);
         }
 
         private Window CreateWindow<TViewModel>()
             where TViewModel : ViewModelBase
         {
-            ViewModelBase viewModel = viewModelFactory.CreateViewModel<TViewModel>();
+            var viewModel = _viewModelFactory.CreateViewModel<TViewModel>();
             viewModel.ThrowIfNull(nameof(viewModel));
 
-            Window parentWindow = ActiveDialog;
+            var parentWindow = ActiveDialog;
 
             Window newWindow;
 
@@ -186,11 +188,11 @@ namespace Osc.Dejection.Framework
             else
                 newWindow = CreateChildWindow(viewModel, parentWindow);
 
-            dataTemplateService.InjectDataTemplates(newWindow);
+            _dataTemplateService.InjectDataTemplates(newWindow);
 
-            windowCollection.Insert(0, newWindow);
+            _windowCollection.Insert(0, newWindow);
 
-            initializationService.Initialize(viewModel);
+            _initializationService.Initialize(viewModel);
 
             return newWindow;
         }
@@ -202,7 +204,7 @@ namespace Osc.Dejection.Framework
         
         private Window CreateChildWindow(ViewModelBase viewModel, Window parentWindow)
         {
-            Window window = new Window()
+            var window = new Window()
             {
                 WindowStyle = WindowStyle.None,
                 ResizeMode = ResizeMode.NoResize,
@@ -227,7 +229,7 @@ namespace Osc.Dejection.Framework
 
         private Window CreateMainWindow(ViewModelBase viewModel)
         {
-            Window window = new Window()
+            var window = new Window()
             {
                 WindowState = WindowState.Maximized,
                 WindowStyle = WindowStyle.SingleBorderWindow,

@@ -14,23 +14,25 @@ namespace Osc.Dejection.Navigation
     {
         #region Fields
 
-        private readonly IDialogService dialogService;
-        private readonly IViewModelFactory viewModelFactory;
-        private readonly IInitializationService initializationService;
+        private readonly IDialogService _dialogService;
+        private readonly IViewModelFactory _viewModelFactory;
+        private readonly IInitializationService _initializationService;
 
         #endregion
 
         #region Initialize
 
-        public NavigationService(IDialogService dialogService, IViewModelFactory viewModelFactory, IInitializationService initializationService)
+        public NavigationService(IDialogService dialogService,
+            IViewModelFactory viewModelFactory,
+            IInitializationService initializationService)
         {
-            this.dialogService = dialogService;
-            this.viewModelFactory = viewModelFactory;
-            this.initializationService = initializationService;
+            _dialogService = dialogService;
+            _viewModelFactory = viewModelFactory;
+            _initializationService = initializationService;
 
-            this.dialogService.ThrowIfNull(nameof(dialogService));
-            this.viewModelFactory.ThrowIfNull(nameof(viewModelFactory));
-            this.initializationService.ThrowIfNull(nameof(initializationService));
+            _dialogService.ThrowIfNull(nameof(dialogService));
+            _viewModelFactory.ThrowIfNull(nameof(viewModelFactory));
+            _initializationService.ThrowIfNull(nameof(initializationService));
         }
 
         #endregion    
@@ -44,22 +46,22 @@ namespace Osc.Dejection.Navigation
             where Owner : ViewModelBase
             where Target : ViewModelBase
         {
-            ViewModelBase owner = dialogService.ActiveDialogs
+            var owner = _dialogService.ActiveDialogs
                 .Select(obj => FindOwner<Owner>((obj.Content as ContentControl)?.Content as ViewModelBase))
                 .FirstOrDefault(obj => !obj.IsNull());
 
             if (owner.IsNull())
                 return;
 
-            ViewModelBase previous = owner.SelectedViewModel;
+            var previous = owner.SelectedViewModel;
 
             if (!previous.IsNull())
-                initializationService.UnInitialize(previous);
+                _initializationService.UnInitialize(previous);
 
-            ViewModelBase target = viewModelFactory.CreateViewModel<Target>();
+            var target = _viewModelFactory.CreateViewModel<Target>();
 
             if (!target.IsNull())
-                initializationService.Initialize(target);
+                _initializationService.Initialize(target);
 
             owner.SelectedViewModel = target;
         }

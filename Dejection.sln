@@ -9,13 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Osc.Dejection.Themes.Sample
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Osc.Dejection.Tests", "Osc.Dejection.Tests\Osc.Dejection.Tests.csproj", "{15532F62-5F18-4055-A257-FA83A2A31C33}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{33D289E1-DC8C-457E-BE98-9281A62216DC}"
-	ProjectSection(SolutionItems) = preProject
-		.build\ApplyVersionToAssemblies.ps1 = .build\ApplyVersionToAssemblies.ps1
-		.build\DownloadAzureBlobs.ps1 = .build\DownloadAzureBlobs.ps1
-		.build\SquirrelReleasify.ps1 = .build\SquirrelReleasify.ps1
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Osc.Dejection", "Osc.Dejection\Osc.Dejection.csproj", "{22026BDA-41A6-42CE-A3AE-7E05CCFEAE84}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Osc.Dejection.Sample", "Osc.Dejection.Sample\Osc.Dejection.Sample.csproj", "{2DDC77B8-752E-40CA-8B6F-FFA8B14BB01A}"

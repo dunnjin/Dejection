@@ -18,22 +18,39 @@ namespace Osc.Dejection.Sample
     /// </summary>
     public partial class App : Application
     {
+        /// <summary>
+        /// Required entry point
+        /// Uses an extension on StartupEventArgs to start the app
+        /// </summary>
+        /// <param name="startupEventArgs"></param>
         protected override void OnStartup(StartupEventArgs startupEventArgs)
         {
             startupEventArgs
-              .Register(assembly => assembly.FullName.StartsWith("Osc"))
-              .Container(container =>
-              {
-                  // Setup listeners
-                  ICommandService commandService = container.Resolve<ICommandService>();
+                .Register(assembly => assembly.FullName.StartsWith("Osc"))
+                .Container(container =>
+                {
+                    // NOTE: Dejection dependencies are all already registered
 
-                  // We can use Nlog or Log4Net to log all Debug/Errors in a single class rather than then calling it in every class
-                  commandService.Listener.OnException = (exception, data) =>
-                  {
+                    // Here you should register your dependencies which will automatically be resolved via creation of ViewModels
+
+                    // Setup listeners
+                    var commandService = container.Resolve<ICommandService>();
+
+                    // Captures all exceptions that occur
+                    commandService.Listener.OnException = (exception, data) =>
+                    {
                         Console.WriteLine(exception.ToString());
-                  };
-              })
-              .Start<ApplicationViewModel>();
+                    };
+
+                    // Captures all actions executed
+                    commandService.Listener.Execute = data =>
+                    {
+                        Console.WriteLine($"Class: {data.ClassName}");
+                        Console.WriteLine($"Method: {data.MethodName}");
+                        Console.WriteLine($"Line Number: {data.LineNumber}");
+                    };
+                })
+                .Start<ApplicationViewModel>();
 
         }
     }

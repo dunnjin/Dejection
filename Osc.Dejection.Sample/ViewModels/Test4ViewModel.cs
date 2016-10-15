@@ -13,18 +13,18 @@ namespace Osc.Dejection.Sample.ViewModels
    
     public class Test4ViewModel : ViewModelBase
     {
-        private readonly ICommandService commandService;
-        private readonly INavigationService navigationService;
-        private readonly IDialogService dialogService;
+        private readonly ICommandService _commandService;
+        private readonly INavigationService _navigationService;
+        private readonly IDialogService _dialogService;
 
         public ICommand NavigateTest1Command
         {
             get
             {
-                return commandService
+                return _commandService
                     .Execute(() =>
                     {
-                        navigationService.Navigate<Test4ViewModel, Test1ViewModel>();
+                        _navigationService.Navigate<Test4ViewModel, Test1ViewModel>();
                     })
                     .Relay();
             }
@@ -34,10 +34,10 @@ namespace Osc.Dejection.Sample.ViewModels
         {
             get
             {
-                return commandService
+                return _commandService
                     .Execute(() =>
                     {
-                        navigationService.Navigate<Test4ViewModel, Test2ViewModel>();
+                        _navigationService.Navigate<Test4ViewModel, Test2ViewModel>();
                     })
                     .Relay();
             }
@@ -47,30 +47,24 @@ namespace Osc.Dejection.Sample.ViewModels
         {
             get
             {
-                return commandService
+                return _commandService
                     .Execute(() =>
                     {
-                        dialogService.Close<Test4ViewModel>();
+                        // Will close the topmost dialog based off the ViewModel type specified
+                        // If the the ViewModel is not found then no dialog is closed
+                        _dialogService.Close<Test4ViewModel>();
                     })
                     .Relay();
             }
         }
 
-        public Test4ViewModel(ICommandService commandService, INavigationService navigationService, IDialogService dialogService)
+        public Test4ViewModel(ICommandService commandService,
+            INavigationService navigationService,
+            IDialogService dialogService)
         {
-            this.commandService = commandService;
-            this.navigationService = navigationService;
-            this.dialogService = dialogService;
+            _commandService = commandService;
+            _navigationService = navigationService;
+            _dialogService = dialogService;
         }
-
-        public override void Initialize()
-        {
-            base.Initialize();
-
-            dialogService.ActiveDialog.WindowState = System.Windows.WindowState.Maximized;
-        }
-
-
     }
-    
 }

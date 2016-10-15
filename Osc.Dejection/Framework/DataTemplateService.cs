@@ -15,7 +15,7 @@ namespace Osc.Dejection.Framework
     {
         #region Fields
 
-        private IList<DataTemplate> dataTemplateCollection = new List<DataTemplate>();
+        private IList<DataTemplate> _dataTemplateCollection = new List<DataTemplate>();
 
         #endregion
 
@@ -27,7 +27,7 @@ namespace Osc.Dejection.Framework
         /// <param name="content"></param>
         public void InjectDataTemplates(Window content)
         {
-            foreach(DataTemplate dataTemplate in dataTemplateCollection)
+            foreach(var dataTemplate in _dataTemplateCollection)
             {
                 content.Resources.Add(dataTemplate.DataTemplateKey, dataTemplate);
             }
@@ -39,45 +39,33 @@ namespace Osc.Dejection.Framework
         /// <param name="predicate">The pattern used to determine what dlls that are loaded in memory to look for ViewModel / View convention</param>
         public void GenerateDataTemplates(Func<Assembly, bool> predicate)
         {
-            foreach(Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()
+            foreach(var assembly in AppDomain.CurrentDomain.GetAssemblies()
                 .Where(predicate))
             {
-                List<Type> viewTypes = new List<Type>(assembly.GetTypes()
+                var viewTypes = new List<Type>(assembly.GetTypes()
                     .Where(obj => typeof(ContentControl).IsAssignableFrom(obj))
                     .Where(obj => obj.Name.EndsWith("View")));
 
-                List<Type> viewModelTypes = new List<Type>(assembly.GetTypes()
+                var viewModelTypes = new List<Type>(assembly.GetTypes()
                     .Where(obj => typeof(ViewModelBase).IsAssignableFrom(obj))
                     .Where(obj => obj.Name.EndsWith("ViewModel")));
 
-                foreach(Type view in viewTypes)
+                foreach(var view in viewTypes)
                 {
                     string viewName = view.Name;
 
-                    Type viewModel = viewModelTypes
+                    var viewModel = viewModelTypes
                         .FirstOrDefault(obj => obj.Name == $"{viewName}Model");
 
                     if (viewModel.IsNull())
                         continue;
 
-                    DataTemplate dataTemplate = CreateTemplate(viewModel, view);
+                    var dataTemplate = CreateTemplate(viewModel, view);
 
-                    dataTemplateCollection.Add(dataTemplate);
+                    _dataTemplateCollection.Add(dataTemplate);
                 }                            
             }
         }
-
-        //public DataTemplate GetTemplate<TSource>()
-        // where TSource : ViewModelBase
-        //{
-        //    return CreateTemplate(typeof(TSource), GetViewFromViewModel<TSource>());
-        //}
-
-        //private Type GetViewFromViewModel<TSource>()
-        //    where TSource : ViewModelBase
-        //{
-        //    return viewTypes.FirstOrDefault(obj => obj.Name == typeof(TSource).Name.Replace("Model", string.Empty));
-        //}
         
         private DataTemplate CreateTemplate(Type viewModelType, Type viewType)
         {
