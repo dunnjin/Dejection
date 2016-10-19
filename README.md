@@ -1,8 +1,6 @@
 # Dejection
 A simple convention-based MVVM framework for WPF
 
-Its used to
-
 ## Table of contents
 
 1. [Implemented functionality](https://github.com/osc-solutions/Dejection#implemented-functionality)
